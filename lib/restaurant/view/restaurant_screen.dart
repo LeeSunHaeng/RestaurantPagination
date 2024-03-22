@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_pagination/restaurant/component/restraunt_card.dart';
+import 'package:restaurant_pagination/restaurant/model/restaurant_model.dart';
+import 'package:restaurant_pagination/restaurant/view/restaurant_detail_screen.dart';
 
 import '../../common/const/data.dart';
 
@@ -32,26 +34,24 @@ class RestaurantScreen extends StatelessWidget {
                   return Container();
                 }
                 return ListView.separated(
-                    itemCount: snapShot.data!.length,
-                    itemBuilder: (_, index){
-                      final item = snapShot.data![index];
-                      return RestaurantCard(
-                        image: Image.network('http://$ip${item['thumbUrl']}'),
-                        // image: Image.asset('asset/img/food/ddeok_bok_gi.jpg'),
-                        name: item['name'],
-                        tags: List<String>.from(item['tags']) ,
-                        ratingsCount: item['ratingsCount'],
-                        deliveryTime: item['deliveryTime'],
-                        deliveryFee: item['deliveryFee'],
-                        ratings: item['ratings'],
-                      );
-                    },
-                    separatorBuilder: (_, index){
-                      return SizedBox(height: 16.0,);
-                    },
+                  itemCount: snapShot.data!.length,
+                  itemBuilder: (_, index) {
+                    final item = snapShot.data![index];
+                    final pItem = RestaurantModel.fromJson(json: item);
+
+                    return GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => RestaurantDetainScreen())
+                          );
+                        },
+                        child: RestaurantCard.fromModel(model: pItem));
+                  },
+                  separatorBuilder: (_, index) {
+                    return SizedBox(height: 16.0,);
+                  },
 
                 );
-
               },
             )
         )
